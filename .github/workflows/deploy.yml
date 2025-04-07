@@ -45,19 +45,7 @@ jobs:
         # v4 is the version - generally use the latest stable version
         uses: actions/checkout@v4
 
-      # Step 2: Install pnpm package manager
-      # This MUST come before setup-node when using pnpm for caching
-      - name: Install pnpm
-        # This action sets up pnpm on the runner
-        uses: pnpm/action-setup@v2
-        with:
-          # Specify which version of pnpm to use
-          version: 8
-          # Don't install dependencies yet - we'll do that later
-          # Setting to false because we want to cache them in the next step
-          run_install: false
-
-      # Step 3: Setup Node.js environment
+      # Step 2: Setup Node.js environment
       - name: Setup Node.js
         # Official action to set up Node.js
         uses: actions/setup-node@v4
@@ -66,22 +54,22 @@ jobs:
           # You can specify an exact version (e.g., "18.15.0") or a major version with latest minor/patch
           node-version: "18"
           # Enables caching of dependencies to speed up workflows
-          # We specify "pnpm" since that's our package manager
-          cache: "pnpm"
+          # We specify "npm" since that's our package manager
+          cache: "npm"
 
-      # Step 4: Install project dependencies using pnpm
+      # Step 3: Install project dependencies using npm
       - name: Install dependencies
         # This is a direct command run in the shell, not an action
         # It installs all dependencies defined in your package.json
-        run: pnpm install
+        run: npm ci
 
-      # Step 5: Build the application for production
+      # Step 4: Build the application for production
       - name: Build application
         # This runs the build script defined in package.json
         # For a Vite app, this typically runs "vite build"
-        run: pnpm build
+        run: npm run build
 
-      # Step 6: Upload the built files as an artifact for the deployment job
+      # Step 5: Upload the built files as an artifact for the deployment job
       - name: Upload build artifact
         # This action handles artifact creation for GitHub Pages
         uses: actions/upload-pages-artifact@v3
